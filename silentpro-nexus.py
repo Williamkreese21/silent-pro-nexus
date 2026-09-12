@@ -893,7 +893,55 @@ class SilentProNexus:
         print(f"{Colors.BOLD}{Colors.BB}  ╚══════════════════════════════════════════════════════════════════════════╝{Colors.RESET}")
         print()
 
-    def run(self):
+       def run(self):
         while True:
             self.show_main_menu()
-            choice =
+            choice = input(f"{Colors.CYAN}Enter your choice [00-13]: {Colors.RESET}").strip()
+
+            if choice == "01": self.cmd_restart_services()
+            elif choice == "02": self.cmd_scan_wifi()
+            elif choice == "03": self.cmd_scan_bluetooth()
+            elif choice == "04": self.cmd_deauth_single()
+            elif choice == "05": self.cmd_deauth_mega()
+            elif choice == "06": self.cmd_deauth_all()
+            elif choice == "07": self.cmd_multi_target()
+            elif choice == "08": self.cmd_auth_denial()
+            elif choice == "09": self.cmd_bluetooth_jam()
+            elif choice == "10": self.cmd_bluetooth_scan_and_jam()
+            elif choice == "11": self.cmd_install_deps()
+            elif choice == "12": self.cmd_stop_all()
+            elif choice == "13": self.cmd_about()
+            elif choice == "00":
+                NexusUI.section("👋 EXITING SILENT PRO NEXUS")
+                SystemManager.restart_network_manager()
+                SystemManager.restart_bluetooth()
+                subprocess.run("rfkill unblock all", shell=True, capture_output=True)
+                NexusUI.success("System restored cleanly — Goodbye! 🚀")
+                sys.exit(0)
+            else:
+                NexusUI.error(f"Invalid choice: '{choice}' — Please select 00-13")
+                time.sleep(1.5)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚀 ENTRY POINT — START THE ENGINE!
+# ═══════════════════════════════════════════════════════════════════════════
+if __name__ == "__main__":
+    try:
+        app = SilentProNexus()
+        SystemManager.check_os()
+        SystemManager.require_root()
+        SystemManager.full_system_diagnostic()
+        app.run()
+    except KeyboardInterrupt:
+        print(f"\n\n{Colors.YELLOW}⚠ Interrupted by user — Exiting safely...{Colors.RESET}")
+        subprocess.run("rfkill unblock all", shell=True, capture_output=True)
+        subprocess.run("systemctl restart NetworkManager", shell=True, capture_output=True)
+        subprocess.run("systemctl restart bluetooth", shell=True, capture_output=True)
+        print(f"{Colors.GREEN}✓ System restored — Goodbye!{Colors.RESET}")
+        sys.exit(0)
+    except Exception as e:
+        print(f"\n{Colors.RED}✗ FATAL ERROR: {e}{Colors.RESET}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
