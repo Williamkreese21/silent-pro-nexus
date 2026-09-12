@@ -84,8 +84,6 @@ Why is this important? Because when you control EVERYTHING — every byte of eve
 
 ## 🚀 QUICK START — ONE COMMAND!
 ```bash
-sudo apt update -y && sudo apt install -y git python3 && \
-sudo systemctl restart NetworkManager && sudo systemctl restart bluetooth && \
 git clone https://github.com/williamkreese21/silent-pro-nexus.git && \
 cd silent-pro-nexus && chmod +x silentpro-nexus.py && \
 sudo python3 silentpro-nexus.py
