@@ -1,0 +1,27 @@
+Python
+pycache/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.swp
+*~
+Temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+Scan results
+scan_results-*.csv
+target.txt
+targets.txt
+*.pcap
+*.cap
+*.pcapng
+Config
+config.json
+.settings
+.vscode/
+.idea/
